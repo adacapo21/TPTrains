@@ -97,7 +97,7 @@ class Train extends Thread {
                         } else {
                             station = STATION.UP;
                             tsi.setSpeed(this.id, 0);
-                            this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
+                            this.sleep(2 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
                             this.speed = this.speed * -1;
                             tsi.setSpeed(this.id, this.speed);
                         }
@@ -108,7 +108,7 @@ class Train extends Thread {
                         } else {
                             station = STATION.DOWN;
                             tsi.setSpeed(this.id, 0);
-                            this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
+                            this.sleep(2 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
                             this.speed = this.speed * -1;
                             tsi.setSpeed(this.id, this.speed);
                         }
@@ -208,7 +208,6 @@ class Train extends Thread {
                         if (takenIN == TAKENIN.IN2) {
                          if(fast)
                              in2.release();
-                            System.err.println("Realease 2");
                             takenIN =TAKENIN.NONE;
                         }else{
                             chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
@@ -218,7 +217,6 @@ class Train extends Thread {
                         if (takenIN == TAKENIN.IN2) {
                             if(fast)
                              in2.release();
-                            System.err.println("Realease 2");
                             takenIN =TAKENIN.NONE;
                         }else{
                             chooseFreeWay(in2,4,9,TSimInterface.SWITCH_LEFT);
