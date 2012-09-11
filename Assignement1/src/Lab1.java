@@ -104,6 +104,14 @@ class Train extends Thread {
                 } else if (se.getXpos() == 5 && se.getYpos() == 11) {
                 } else if (se.getXpos() == 3 && se.getYpos() == 13) {
                 } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
+                    if (takenIN == TAKENIN.IN3) {
+                        in3.release();
+                        takenIN =TAKENIN.NONE;
+                    }else{
+
+
+                        takenIN = TAKENIN.IN3;
+                    }
                 } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
                 } else if (se.getXpos() == 2 && se.getYpos() == 9) {
                 } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
@@ -125,6 +133,21 @@ class Train extends Thread {
             tsi.setSpeed(this.id, 0);
             s.acquire();
             tsi.setSpeed(this.id, this.speed);
+        }
+    }
+
+    private void chooseFreeWay(Semaphore s, int xin, int yin, int fastestWay) throws CommandException, InterruptedException {
+        TSimInterface tsi = TSimInterface.getInstance();
+        int otherWay;
+        if(fastestWay == TSimInterface.SWITCH_LEFT)
+            otherWay = TSimInterface.SWITCH_RIGHT;
+        else
+            otherWay = TSimInterface.SWITCH_LEFT;
+
+        if (s.tryAcquire() == false) { // Fastest way occuped
+            tsi.setSwitch(xin, yin, otherWay);
+        } else { // We take the fastest way
+            tsi.setSwitch(xin, yin, fastestWay);
         }
     }
 }
