@@ -197,7 +197,8 @@ class Train extends Thread {
                         }
                     } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
                         if (takenIN == TAKENIN.IN3) {
-                            in3.release();
+                        		if(fast)
+                            	in3.release();
                             takenIN =TAKENIN.NONE;
                         }else{
                             chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
@@ -225,7 +226,8 @@ class Train extends Thread {
                         }
                     } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
                         if (takenIN == TAKENIN.IN1) {
-                            in1.release();
+                            if(fast)
+                            	in1.release();
                             takenIN =TAKENIN.NONE;
                         }else{
                             chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
