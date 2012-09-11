@@ -11,7 +11,7 @@ public class Lab1 {
     }
 
     public Lab1(String[] args) {
-        if (args.length != 2 || args.length != 3) {
+        if (args.length != 2 && args.length != 3) {
             System.err.println("2 or 3 arguments !!!!!");
             return;
         }
@@ -76,11 +76,13 @@ class Train extends Thread {
     @Override
     public void run() {
         TSimInterface tsi = TSimInterface.getInstance();
-        while (true) {
-            try {
+        try {
+            tsi.setSpeed(this.id, this.speed);
+            while (true) {
+
                 SensorEvent se = tsi.getSensor(this.id);
 
-                if (se.getXpos() == 15 && se.getYpos() == 3) {         //Stations section
+                if (se.getXpos() == 15 && se.getYpos() == 3) { //Stations section
                 } else if (se.getXpos() == 15 && se.getYpos() == 5) {
                 } else if (se.getXpos() == 15 && se.getYpos() == 11) {
                 } else if (se.getXpos() == 15 && se.getYpos() == 13) {
@@ -95,41 +97,90 @@ class Train extends Thread {
                         testFreeWay(sc3);
                         takenSC = TAKENSC.SC3;
                     }
-                } else if (se.getXpos() == 15 && se.getYpos() == 7   //SC2
-                        || se.getXpos() == 16 && se.getYpos() == 8
-                        || se.getXpos() == 13 && se.getYpos() == 9
-                        || se.getXpos() == 14 && se.getYpos() == 10) {
+                } else if (se.getXpos() == 15 && se.getYpos() == 7) { //SC2
                     if (takenSC == TAKENSC.SC2) {
                         sc2.release();
                         takenSC = TAKENSC.NONE;
                     } else {
                         testFreeWay(sc2);
                         takenSC = TAKENSC.SC2;
+                        tsi.setSwitch(17, 7, TSimInterface.SWITCH_RIGHT);
                     }
-                } else if (se.getXpos() == 6 && se.getYpos() == 9   //SC1
-                        || se.getXpos() == 5 && se.getYpos() == 10
-                        || se.getXpos() == 5 && se.getYpos() == 11
-                        || se.getXpos() == 3 && se.getYpos() == 13) { 
+                } else if (se.getXpos() == 16 && se.getYpos() == 8) {
+                    if (takenSC == TAKENSC.SC2) {
+                        sc2.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc2);
+                        takenSC = TAKENSC.SC2;
+                        tsi.setSwitch(17, 7, TSimInterface.SWITCH_LEFT);
+                    }
+                } else if (se.getXpos() == 13 && se.getYpos() == 9) {
+                    if (takenSC == TAKENSC.SC2) {
+                        sc2.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc2);
+                        takenSC = TAKENSC.SC2;
+                        tsi.setSwitch(15, 9, TSimInterface.SWITCH_RIGHT);
+                    }
+                } else if (se.getXpos() == 14 && se.getYpos() == 10) {
+                    if (takenSC == TAKENSC.SC2) {
+                        sc2.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc2);
+                        takenSC = TAKENSC.SC2;
+                        tsi.setSwitch(15, 9, TSimInterface.SWITCH_LEFT);
+                    }
+                } else if (se.getXpos() == 6 && se.getYpos() == 9) { //SC1
                     if (takenSC == TAKENSC.SC1) {
                         sc1.release();
                         takenSC = TAKENSC.NONE;
                     } else {
                         testFreeWay(sc1);
                         takenSC = TAKENSC.SC1;
+                        tsi.setSwitch(4, 9, TSimInterface.SWITCH_LEFT);
+                    }
+                } else if (se.getXpos() == 5 && se.getYpos() == 10) {
+                    if (takenSC == TAKENSC.SC1) {
+                        sc1.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc1);
+                        takenSC = TAKENSC.SC1;
+                        tsi.setSwitch(4, 9, TSimInterface.SWITCH_RIGHT);
+                    }
+                } else if (se.getXpos() == 5 && se.getYpos() == 11) {
+                    if (takenSC == TAKENSC.SC1) {
+                        sc1.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc1);
+                        takenSC = TAKENSC.SC1;
+                        tsi.setSwitch(3, 11, TSimInterface.SWITCH_LEFT);
+                    }
+                } else if (se.getXpos() == 3 && se.getYpos() == 13) {
+                    if (takenSC == TAKENSC.SC1) {
+                        sc1.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc1);
+                        takenSC = TAKENSC.SC1;
+                        tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
                     }
                 } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
                 } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
                 } else if (se.getXpos() == 2 && se.getYpos() == 9) {
                 } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
                 }
-
-            } catch (CommandException e) {
-                e.printStackTrace();    // or only e.getMessage() for the error
-                System.exit(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();    // or only e.getMessage() for the error
-                System.exit(1);
             }
+        } catch (CommandException e) {
+            e.printStackTrace();    // or only e.getMessage() for the error
+            System.exit(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();    // or only e.getMessage() for the error
+            System.exit(1);
         }
     }
 
