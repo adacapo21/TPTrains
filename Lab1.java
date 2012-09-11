@@ -44,9 +44,9 @@ class Train extends Thread {
     int speed;
     TAKENSC takenSC = TAKENSC.NONE;
     TAKENIN takenIN;
+    STATION station;
 
     enum TAKENSC {
-
         SC1,
         SC2,
         SC3,
@@ -54,10 +54,15 @@ class Train extends Thread {
     }
 
     enum TAKENIN {
-
         IN1,
         IN2,
         IN3,
+        NONE
+    }
+
+    enum STATION {
+        UP,
+        DOWN,
         NONE
     }
 
@@ -68,8 +73,10 @@ class Train extends Thread {
 
         if (id == 1) {
             takenIN = TAKENIN.IN3;
+            station = STATION.UP;
         } else if (id == 2) {
             takenIN = TAKENIN.IN1;
+            station = STATION.DOWN;
         }
     }
 
@@ -82,10 +89,28 @@ class Train extends Thread {
 
                 SensorEvent se = tsi.getSensor(this.id);
 
-                if (se.getXpos() == 15 && se.getYpos() == 3) { //Stations section
-                } else if (se.getXpos() == 15 && se.getYpos() == 5) {
-                } else if (se.getXpos() == 15 && se.getYpos() == 11) {
-                } else if (se.getXpos() == 15 && se.getYpos() == 13) {
+                if (se.getXpos() == 15 && se.getYpos() == 3
+                        || se.getXpos() == 15 && se.getYpos() == 5) { //Stations section
+                    if(station == STATION.UP) {
+                        station = STATION.NONE;
+                    } else {
+                        station = STATION.UP;
+                        tsi.setSpeed(this.id, 0);
+                        this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
+                        this.speed = this.speed * -1;
+                        tsi.setSpeed(this.id, this.speed);
+                    }
+                } else if (se.getXpos() == 15 && se.getYpos() == 11
+                        || se.getXpos() == 15 && se.getYpos() == 13) {
+                    if(station == STATION.DOWN) {
+                        station = STATION.NONE;
+                    } else {
+                        station = STATION.DOWN;
+                        tsi.setSpeed(this.id, 0);
+                        this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
+                        this.speed = this.speed * -1;
+                        tsi.setSpeed(this.id, this.speed);
+                    }
                 } else if (se.getXpos() == 8 && se.getYpos() == 5 //SC3
                         || se.getXpos() == 10 && se.getYpos() == 7
                         || se.getXpos() == 6 && se.getYpos() == 7
