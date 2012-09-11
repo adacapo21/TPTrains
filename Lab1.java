@@ -9,14 +9,7 @@ public class Lab1 {
   public Lab1(String[] args) {
     TSimInterface tsi = TSimInterface.getInstance();
 
-    /*try {
-      //tsi.setSpeed(1,10);
-      tsi.setSpeed(2,10);
-    }
-    catch (CommandException e) {
-      e.printStackTrace();    // or only e.getMessage() for the error
-      System.exit(1);
-    }*/
+
   }
 }
 
