@@ -80,11 +80,14 @@ class Train extends Thread {
             try {
                 SensorEvent se = tsi.getSensor(this.id);
 
-                if (se.getXpos() == 15 && se.getYpos() == 3) { //Stations section
+                if (se.getXpos() == 15 && se.getYpos() == 3) {         //Stations section
                 } else if (se.getXpos() == 15 && se.getYpos() == 5) {
                 } else if (se.getXpos() == 15 && se.getYpos() == 11) {
                 } else if (se.getXpos() == 15 && se.getYpos() == 13) {
-                } else if (se.getXpos() == 8 && se.getYpos() == 5) { //SC3
+                } else if (se.getXpos() == 8 && se.getYpos() == 5 //SC3
+                        || se.getXpos() == 10 && se.getYpos() == 7
+                        || se.getXpos() == 6 && se.getYpos() == 7
+                        || se.getXpos() == 9 && se.getYpos() == 8) {
                     if (takenSC == TAKENSC.SC3) {
                         sc3.release();
                         takenSC = TAKENSC.NONE;
@@ -92,17 +95,28 @@ class Train extends Thread {
                         testFreeWay(sc3);
                         takenSC = TAKENSC.SC3;
                     }
-                } else if (se.getXpos() == 10 && se.getYpos() == 7) {
-                } else if (se.getXpos() == 6 && se.getYpos() == 7) {
-                } else if (se.getXpos() == 9 && se.getYpos() == 8) {
-                } else if (se.getXpos() == 15 && se.getYpos() == 7) { //SC2
-                } else if (se.getXpos() == 16 && se.getYpos() == 8) {
-                } else if (se.getXpos() == 13 && se.getYpos() == 9) {
-                } else if (se.getXpos() == 14 && se.getYpos() == 10) {
-                } else if (se.getXpos() == 6 && se.getYpos() == 9) { //SC1
-                } else if (se.getXpos() == 5 && se.getYpos() == 10) {
-                } else if (se.getXpos() == 5 && se.getYpos() == 11) {
-                } else if (se.getXpos() == 3 && se.getYpos() == 13) {
+                } else if (se.getXpos() == 15 && se.getYpos() == 7   //SC2
+                        || se.getXpos() == 16 && se.getYpos() == 8
+                        || se.getXpos() == 13 && se.getYpos() == 9
+                        || se.getXpos() == 14 && se.getYpos() == 10) {
+                    if (takenSC == TAKENSC.SC2) {
+                        sc2.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc2);
+                        takenSC = TAKENSC.SC2;
+                    }
+                } else if (se.getXpos() == 6 && se.getYpos() == 9   //SC1
+                        || se.getXpos() == 5 && se.getYpos() == 10
+                        || se.getXpos() == 5 && se.getYpos() == 11
+                        || se.getXpos() == 3 && se.getYpos() == 13) { 
+                    if (takenSC == TAKENSC.SC1) {
+                        sc1.release();
+                        takenSC = TAKENSC.NONE;
+                    } else {
+                        testFreeWay(sc1);
+                        takenSC = TAKENSC.SC1;
+                    }
                 } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
                 } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
                 } else if (se.getXpos() == 2 && se.getYpos() == 9) {
@@ -121,7 +135,7 @@ class Train extends Thread {
 
     private void testFreeWay(Semaphore s) throws CommandException, InterruptedException {
         TSimInterface tsi = TSimInterface.getInstance();
-        if (sc3.tryAcquire() == false) {
+        if (s.tryAcquire() == false) {
             tsi.setSpeed(this.id, 0);
             s.acquire();
             tsi.setSpeed(this.id, this.speed);
