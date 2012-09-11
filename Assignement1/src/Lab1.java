@@ -199,13 +199,33 @@ class Train extends Thread {
                         in3.release();
                         takenIN =TAKENIN.NONE;
                     }else{
-
-
+                        chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
                         takenIN = TAKENIN.IN3;
                     }
                 } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
+                    if (takenIN == TAKENIN.IN2) {
+                        in2.release();
+                        takenIN =TAKENIN.NONE;
+                    }else{
+                        chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
+                        takenIN = TAKENIN.IN2;
+                    }
                 } else if (se.getXpos() == 2 && se.getYpos() == 9) {
+                    if (takenIN == TAKENIN.IN2) {
+                        in2.release();
+                        takenIN =TAKENIN.NONE;
+                    }else{
+                        chooseFreeWay(in2,5,9,TSimInterface.SWITCH_LEFT);
+                        takenIN = TAKENIN.IN2;
+                    }
                 } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
+                    if (takenIN == TAKENIN.IN1) {
+                        in1.release();
+                        takenIN =TAKENIN.NONE;
+                    }else{
+                        chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
+                        takenIN = TAKENIN.IN1;
+                    }
                 }
             }
         } catch (CommandException e) {
