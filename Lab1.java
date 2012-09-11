@@ -1,4 +1,3 @@
-
 import TSim.*;
 import java.util.concurrent.Semaphore;
 
@@ -45,9 +44,9 @@ class Train extends Thread {
     TAKENSC takenSC = TAKENSC.NONE;
     TAKENIN takenIN;
     STATION station;
+    boolean fast = true;
 
     enum TAKENSC {
-
         SC1,
         SC2,
         SC3,
@@ -55,7 +54,6 @@ class Train extends Thread {
     }
 
     enum TAKENIN {
-
         IN1,
         IN2,
         IN3,
@@ -63,7 +61,6 @@ class Train extends Thread {
     }
 
     enum STATION {
-
         UP,
         DOWN,
         NONE
@@ -81,7 +78,6 @@ class Train extends Thread {
             takenIN = TAKENIN.IN1;
             station = STATION.DOWN;
         }
-
     }
 
     @Override
@@ -92,28 +88,27 @@ class Train extends Thread {
             while (true) {
 
                 SensorEvent se = tsi.getSensor(this.id);
-
-                if (se.getStatus() == SensorEvent.ACTIVE) {
-
+                if (se.getStatus() == SensorEvent.ACTIVE){
+                    if(se.getStatus() == SensorEvent.ACTIVE){
                     if (se.getXpos() == 15 && se.getYpos() == 3
                             || se.getXpos() == 15 && se.getYpos() == 5) { //Stations section
-                        if (station == STATION.UP) {
+                        if(station == STATION.UP) {
                             station = STATION.NONE;
                         } else {
                             station = STATION.UP;
                             tsi.setSpeed(this.id, 0);
-                            this.sleep(1 + 2 * Lab1.simulationSpeed * Math.abs(this.speed));
+                            this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
                             this.speed = this.speed * -1;
                             tsi.setSpeed(this.id, this.speed);
                         }
                     } else if (se.getXpos() == 15 && se.getYpos() == 11
                             || se.getXpos() == 15 && se.getYpos() == 13) {
-                        if (station == STATION.DOWN) {
+                        if(station == STATION.DOWN) {
                             station = STATION.NONE;
                         } else {
                             station = STATION.DOWN;
                             tsi.setSpeed(this.id, 0);
-                            this.sleep(1 + 2 * Lab1.simulationSpeed * Math.abs(this.speed));
+                            this.sleep(1 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
                             this.speed = this.speed * -1;
                             tsi.setSpeed(this.id, this.speed);
                         }
@@ -203,38 +198,42 @@ class Train extends Thread {
                     } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
                         if (takenIN == TAKENIN.IN3) {
                             in3.release();
-                            takenIN = TAKENIN.NONE;
-                        } else {
-                            chooseFreeWay(in3, 17, 7, TSimInterface.SWITCH_RIGHT);
+                            takenIN =TAKENIN.NONE;
+                        }else{
+                            chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
                             takenIN = TAKENIN.IN3;
                         }
                     } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
                         if (takenIN == TAKENIN.IN2) {
-                            in2.release();
-                            takenIN = TAKENIN.NONE;
-                        } else {
-                            chooseFreeWay(in2, 15, 9, TSimInterface.SWITCH_RIGHT);
+                         if(fast)
+                             in2.release();
+                            System.err.println("Realease 2");
+                            takenIN =TAKENIN.NONE;
+                        }else{
+                            chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
                             takenIN = TAKENIN.IN2;
                         }
                     } else if (se.getXpos() == 2 && se.getYpos() == 9) {
                         if (takenIN == TAKENIN.IN2) {
-                            in2.release();
-                            takenIN = TAKENIN.NONE;
-                        } else {
-                            chooseFreeWay(in2, 4, 9, TSimInterface.SWITCH_LEFT);
+                            if(fast)
+                             in2.release();
+                            System.err.println("Realease 2");
+                            takenIN =TAKENIN.NONE;
+                        }else{
+                            chooseFreeWay(in2,4,9,TSimInterface.SWITCH_LEFT);
                             takenIN = TAKENIN.IN2;
                         }
                     } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
                         if (takenIN == TAKENIN.IN1) {
-//if(se.getStatus() == SensorEvent.ACTIVE){
                             in1.release();
-                            takenIN = TAKENIN.NONE;
-                        } else {
-                            chooseFreeWay(in1, 3, 11, TSimInterface.SWITCH_LEFT);
+                            takenIN =TAKENIN.NONE;
+                        }else{
+                            chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
                             takenIN = TAKENIN.IN1;
                         }
                     }
                 }
+              }
             }
         } catch (CommandException e) {
             e.printStackTrace(); // or only e.getMessage() for the error
@@ -257,17 +256,19 @@ class Train extends Thread {
     private void chooseFreeWay(Semaphore s, int xin, int yin, int fastestWay) throws CommandException, InterruptedException {
         TSimInterface tsi = TSimInterface.getInstance();
         int otherWay;
-        if (fastestWay == TSimInterface.SWITCH_LEFT) {
+        if(fastestWay == TSimInterface.SWITCH_LEFT)
             otherWay = TSimInterface.SWITCH_RIGHT;
-        } else {
+        else
             otherWay = TSimInterface.SWITCH_LEFT;
-        }
 
         if (s.tryAcquire() == false) { // Fastest way occuped
             tsi.setSwitch(xin, yin, otherWay);
+            System.err.println("SLOW");
+            fast = false;
         } else { // We take the fastest way
+        System.err.println("FAST");
             tsi.setSwitch(xin, yin, fastestWay);
+            fast = true;
         }
     }
 }
-
