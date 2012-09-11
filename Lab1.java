@@ -219,11 +219,10 @@ class Train extends Thread {
 	                      takenIN = TAKENIN.IN2;
 	                  }
 	              } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
-	                  if (takenIN == TAKENIN.IN1) {
-	                  		//if(se.getStatus() == SensorEvent.ACTIVE){
+	                  if (takenIN == TAKENIN.IN1 && se.getStatus() == SensorEvent.ACTIVE) {
 	                      in1.release();
 	                      takenIN =TAKENIN.NONE;
-	                  }else{
+	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.INACTIVE ){
 	                      chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
 	                      takenIN = TAKENIN.IN1;
 	                  }
