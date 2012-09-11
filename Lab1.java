@@ -112,10 +112,10 @@ class Train extends Thread {
                             this.speed = this.speed * -1;
                             tsi.setSpeed(this.id, this.speed);
                         }
-                    } else if (se.getXpos() == 8 && se.getYpos() == 5 //SC3
-                            || se.getXpos() == 10 && se.getYpos() == 7
-                            || se.getXpos() == 6 && se.getYpos() == 7
-                            || se.getXpos() == 9 && se.getYpos() == 8) {
+                    } else if (se.getXpos() == 9 && se.getYpos() == 5 //SC3
+                            || se.getXpos() == 11 && se.getYpos() == 7
+                            || se.getXpos() == 6 && se.getYpos() == 6
+                            || se.getXpos() == 10 && se.getYpos() == 8) {
                         if (takenSC == TAKENSC.SC3) {
                             sc3.release();
                             takenSC = TAKENSC.NONE;
@@ -123,7 +123,7 @@ class Train extends Thread {
                             testFreeWay(sc3);
                             takenSC = TAKENSC.SC3;
                         }
-                    } else if (se.getXpos() == 15 && se.getYpos() == 7) { //SC2
+                    } else if (se.getXpos() == 14 && se.getYpos() == 7) { //SC2
                         if (takenSC == TAKENSC.SC2) {
                             sc2.release();
                             takenSC = TAKENSC.NONE;
@@ -132,7 +132,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC2;
                             tsi.setSwitch(17, 7, TSimInterface.SWITCH_RIGHT);
                         }
-                    } else if (se.getXpos() == 16 && se.getYpos() == 8) {
+                    } else if (se.getXpos() == 15 && se.getYpos() == 8) {
                         if (takenSC == TAKENSC.SC2) {
                             sc2.release();
                             takenSC = TAKENSC.NONE;
@@ -141,7 +141,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC2;
                             tsi.setSwitch(17, 7, TSimInterface.SWITCH_LEFT);
                         }
-                    } else if (se.getXpos() == 13 && se.getYpos() == 9) {
+                    } else if (se.getXpos() == 12 && se.getYpos() == 9) {
                         if (takenSC == TAKENSC.SC2) {
                             sc2.release();
                             takenSC = TAKENSC.NONE;
@@ -150,7 +150,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC2;
                             tsi.setSwitch(15, 9, TSimInterface.SWITCH_RIGHT);
                         }
-                    } else if (se.getXpos() == 14 && se.getYpos() == 10) {
+                    } else if (se.getXpos() == 13 && se.getYpos() == 10) {
                         if (takenSC == TAKENSC.SC2) {
                             sc2.release();
                             takenSC = TAKENSC.NONE;
@@ -159,7 +159,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC2;
                             tsi.setSwitch(15, 9, TSimInterface.SWITCH_LEFT);
                         }
-                    } else if (se.getXpos() == 6 && se.getYpos() == 9) { //SC1
+                    } else if (se.getXpos() == 7 && se.getYpos() == 9) { //SC1
                         if (takenSC == TAKENSC.SC1) {
                             sc1.release();
                             takenSC = TAKENSC.NONE;
@@ -168,7 +168,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC1;
                             tsi.setSwitch(4, 9, TSimInterface.SWITCH_LEFT);
                         }
-                    } else if (se.getXpos() == 5 && se.getYpos() == 10) {
+                    } else if (se.getXpos() == 6 && se.getYpos() == 10) {
                         if (takenSC == TAKENSC.SC1) {
                             sc1.release();
                             takenSC = TAKENSC.NONE;
@@ -177,7 +177,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC1;
                             tsi.setSwitch(4, 9, TSimInterface.SWITCH_RIGHT);
                         }
-                    } else if (se.getXpos() == 5 && se.getYpos() == 11) {
+                    } else if (se.getXpos() == 6 && se.getYpos() == 11) {
                         if (takenSC == TAKENSC.SC1) {
                             sc1.release();
                             takenSC = TAKENSC.NONE;
@@ -186,7 +186,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC1;
                             tsi.setSwitch(3, 11, TSimInterface.SWITCH_LEFT);
                         }
-                    } else if (se.getXpos() == 3 && se.getYpos() == 13) {
+                    } else if (se.getXpos() == 4 && se.getYpos() == 13) {
                         if (takenSC == TAKENSC.SC1) {
                             sc1.release();
                             takenSC = TAKENSC.NONE;
@@ -195,7 +195,7 @@ class Train extends Thread {
                             takenSC = TAKENSC.SC1;
                             tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
                         }
-                    } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
+                    } else if (se.getXpos() == 19 && se.getYpos() == 8) { //IN3
                         if (takenIN == TAKENIN.IN3) {
                         		if(fast)
                             	in3.release();
@@ -204,7 +204,7 @@ class Train extends Thread {
                             chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
                             takenIN = TAKENIN.IN3;
                         }
-                    } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
+                    } else if (se.getXpos() == 18 && se.getYpos() == 9) { //IN2
                         if (takenIN == TAKENIN.IN2) {
                         		if(fast)
                             	in2.release();
@@ -214,7 +214,7 @@ class Train extends Thread {
                             chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
                             takenIN = TAKENIN.IN2;
                         }
-                    } else if (se.getXpos() == 2 && se.getYpos() == 9) {
+                    } else if (se.getXpos() == 1 && se.getYpos() == 9) {
                         if (takenIN == TAKENIN.IN2) {
                             if(fast)
                             	in2.release();
@@ -224,7 +224,7 @@ class Train extends Thread {
                             chooseFreeWay(in2,4,9,TSimInterface.SWITCH_LEFT);
                             takenIN = TAKENIN.IN2;
                         }
-                    } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
+                    } else if (se.getXpos() == 1 && se.getYpos() == 10) { //IN1
                         if (takenIN == TAKENIN.IN1) {
                             if(fast)
                             	in1.release();
@@ -265,10 +265,8 @@ class Train extends Thread {
 
         if (s.tryAcquire() == false) { // Fastest way occuped
             tsi.setSwitch(xin, yin, otherWay);
-            System.err.println("SLOW");
             fast = false;
         } else { // We take the fastest way
-        System.err.println("FAST");
             tsi.setSwitch(xin, yin, fastestWay);
             fast = true;
         }
