@@ -195,34 +195,39 @@ class Train extends Thread {
 	                      tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
 	                  }
 	              } else if (se.getXpos() == 19 && se.getYpos() == 7) { //IN3
-	                  if (takenIN == TAKENIN.IN3) {
+	                  if (takenIN == TAKENIN.IN3 && se.getStatus() == SensorEvent.INACTIVE) {
 	                      in3.release();
 	                      takenIN =TAKENIN.NONE;
-	                  }else{
+	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.ACTIVE ){
 	                      chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
 	                      takenIN = TAKENIN.IN3;
 	                  }
 	              } else if (se.getXpos() == 17 && se.getYpos() == 9) { //IN2
-	                  if (takenIN == TAKENIN.IN2) {
+	                  if (takenIN == TAKENIN.IN2 && se.getStatus() == SensorEvent.INACTIVE) {
 	                      in2.release();
 	                      takenIN =TAKENIN.NONE;
-	                  }else{
+	                      System.err.println("INATIVE");
+	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.ACTIVE ){
+	                  		System.err.println("ACTIVE");
 	                      chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
 	                      takenIN = TAKENIN.IN2;
+	                      
 	                  }
 	              } else if (se.getXpos() == 2 && se.getYpos() == 9) {
-	                  if (takenIN == TAKENIN.IN2) {
+	                  if (takenIN == TAKENIN.IN2 && se.getStatus() == SensorEvent.INACTIVE) {
 	                      in2.release();
 	                      takenIN =TAKENIN.NONE;
-	                  }else{
+	                      System.err.println("INATIVE");
+	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.ACTIVE ){
 	                      chooseFreeWay(in2,4,9,TSimInterface.SWITCH_LEFT);
 	                      takenIN = TAKENIN.IN2;
+	                      System.err.println("ACTIVE");
 	                  }
 	              } else if (se.getXpos() == 1 && se.getYpos() == 11) { //IN1
-	                  if (takenIN == TAKENIN.IN1 && se.getStatus() == SensorEvent.ACTIVE) {
+	                  if (takenIN == TAKENIN.IN1 && se.getStatus() == SensorEvent.INACTIVE) {
 	                      in1.release();
 	                      takenIN =TAKENIN.NONE;
-	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.INACTIVE ){
+	                  }else if (takenIN == TAKENIN.NONE && se.getStatus() == SensorEvent.ACTIVE ){
 	                      chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
 	                      takenIN = TAKENIN.IN1;
 	                  }
@@ -255,8 +260,10 @@ class Train extends Thread {
             otherWay = TSimInterface.SWITCH_LEFT;
 
         if (s.tryAcquire() == false) { // Fastest way occuped
+        		System.err.println("LONG");
             tsi.setSwitch(xin, yin, otherWay);
         } else { // We take the fastest way
+        		System.err.println("FAST");
             tsi.setSwitch(xin, yin, fastestWay);
         }
     }
