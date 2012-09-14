@@ -1,0 +1,13 @@
+Train spotting Documentation
+
+1) Placement of the sensors
+
+	 We put our sensors on all tracks around each intersection so that each train can choose the next path, depending on semaphores, before engaging on one of them.
+
+	All sensors are placed at the same distance from intersections so that we can determine the maximum speed of trains (trains have a stop distance linked to their speed). Trains must be able to stop before the intersection from the time they passed over the sensor. We set the minimal distance of 3 units (With this distance trains can't be either on an intersection and on a sensor).
+
+	There are 4 sensors near stations which allow trains to know when to stop. Its detector also respect the minimum distance of 3 units before the end of the track.
+
+2) Choice of critical sections
+3) Maximum train speed and the reason for it
+4) How you tested your solution
