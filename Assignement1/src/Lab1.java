@@ -1,3 +1,4 @@
+
 import TSim.*;
 import java.util.concurrent.Semaphore;
 
@@ -32,28 +33,30 @@ public class Lab1 {
 
 class Train extends Thread {
 
-    public static Semaphore sc1 = new Semaphore(1);
-    public static Semaphore sc2 = new Semaphore(1);
-    public static Semaphore sc3 = new Semaphore(1);
-    public static Semaphore in1 = new Semaphore(0);
-    public static Semaphore in2 = new Semaphore(1);
-    public static Semaphore in3 = new Semaphore(0);
+    public static Semaphore cs1 = new Semaphore(1); //Critical Section 1
+    public static Semaphore cs2 = new Semaphore(1); //Critical Section 2
+    public static Semaphore cs3 = new Semaphore(1); //Critical Section 3
+    public static Semaphore tw1 = new Semaphore(0); //Two Ways section 1
+    public static Semaphore tw2 = new Semaphore(1); //Two Ways section 2
+    public static Semaphore tw3 = new Semaphore(0); //Two Ways section 3
     boolean direction;
     int id;
     int speed;
-    TAKENSC takenSC = TAKENSC.NONE;
-    TAKENIN takenIN;
+    TAKEN_CS takenCS = TAKEN_CS.NONE;
+    TAKEN_TW takenTW;
     STATION station;
     boolean fast = true;
 
-    enum TAKENSC {
+    enum TAKEN_CS {
+
         SC1,
         SC2,
         SC3,
         NONE
     }
 
-    enum TAKENIN {
+    enum TAKEN_TW {
+
         IN1,
         IN2,
         IN3,
@@ -61,6 +64,7 @@ class Train extends Thread {
     }
 
     enum STATION {
+
         UP,
         DOWN,
         NONE
@@ -70,170 +74,32 @@ class Train extends Thread {
         this.direction = direction;
         this.id = id;
         this.speed = speed;
+    }
 
-        if (id == 1) {
-            takenIN = TAKENIN.IN3;
-            station = STATION.UP;
-        } else if (id == 2) {
-            takenIN = TAKENIN.IN1;
-            station = STATION.DOWN;
+    private void init() throws CommandException {
+        if (this.id == 1) {
+            this.takenTW = TAKEN_TW.IN3;
+            this.station = STATION.UP;
+        } else if (this.id == 2) {
+            this.takenTW = TAKEN_TW.IN1;
+            this.station = STATION.DOWN;
         }
+
+        TSimInterface.getInstance().setSpeed(this.id, this.speed);
     }
 
     @Override
     public void run() {
         TSimInterface tsi = TSimInterface.getInstance();
         try {
-            tsi.setSpeed(this.id, this.speed);
+            init();
             while (true) {
-
                 SensorEvent se = tsi.getSensor(this.id);
-                if (se.getStatus() == SensorEvent.ACTIVE){
-                    if(se.getStatus() == SensorEvent.ACTIVE){
-                    if (se.getXpos() == 15 && se.getYpos() == 3
-                            || se.getXpos() == 15 && se.getYpos() == 5) { //Stations section
-                        if(station == STATION.UP) {
-                            station = STATION.NONE;
-                        } else {
-                            station = STATION.UP;
-                            tsi.setSpeed(this.id, 0);
-                            this.sleep(2 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
-                            this.speed = this.speed * -1;
-                            tsi.setSpeed(this.id, this.speed);
-                        }
-                    } else if (se.getXpos() == 15 && se.getYpos() == 11
-                            || se.getXpos() == 15 && se.getYpos() == 13) {
-                        if(station == STATION.DOWN) {
-                            station = STATION.NONE;
-                        } else {
-                            station = STATION.DOWN;
-                            tsi.setSpeed(this.id, 0);
-                            this.sleep(2 + 2* Lab1.simulationSpeed * Math.abs(this.speed));
-                            this.speed = this.speed * -1;
-                            tsi.setSpeed(this.id, this.speed);
-                        }
-                    } else if (se.getXpos() == 9 && se.getYpos() == 5 //SC3
-                            || se.getXpos() == 11 && se.getYpos() == 7
-                            || se.getXpos() == 6 && se.getYpos() == 6
-                            || se.getXpos() == 10 && se.getYpos() == 8) {
-                        if (takenSC == TAKENSC.SC3) {
-                            sc3.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc3);
-                            takenSC = TAKENSC.SC3;
-                        }
-                    } else if (se.getXpos() == 14 && se.getYpos() == 7) { //SC2
-                        if (takenSC == TAKENSC.SC2) {
-                            sc2.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc2);
-                            takenSC = TAKENSC.SC2;
-                            tsi.setSwitch(17, 7, TSimInterface.SWITCH_RIGHT);
-                        }
-                    } else if (se.getXpos() == 15 && se.getYpos() == 8) {
-                        if (takenSC == TAKENSC.SC2) {
-                            sc2.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc2);
-                            takenSC = TAKENSC.SC2;
-                            tsi.setSwitch(17, 7, TSimInterface.SWITCH_LEFT);
-                        }
-                    } else if (se.getXpos() == 12 && se.getYpos() == 9) {
-                        if (takenSC == TAKENSC.SC2) {
-                            sc2.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc2);
-                            takenSC = TAKENSC.SC2;
-                            tsi.setSwitch(15, 9, TSimInterface.SWITCH_RIGHT);
-                        }
-                    } else if (se.getXpos() == 13 && se.getYpos() == 10) {
-                        if (takenSC == TAKENSC.SC2) {
-                            sc2.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc2);
-                            takenSC = TAKENSC.SC2;
-                            tsi.setSwitch(15, 9, TSimInterface.SWITCH_LEFT);
-                        }
-                    } else if (se.getXpos() == 7 && se.getYpos() == 9) { //SC1
-                        if (takenSC == TAKENSC.SC1) {
-                            sc1.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc1);
-                            takenSC = TAKENSC.SC1;
-                            tsi.setSwitch(4, 9, TSimInterface.SWITCH_LEFT);
-                        }
-                    } else if (se.getXpos() == 6 && se.getYpos() == 10) {
-                        if (takenSC == TAKENSC.SC1) {
-                            sc1.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc1);
-                            takenSC = TAKENSC.SC1;
-                            tsi.setSwitch(4, 9, TSimInterface.SWITCH_RIGHT);
-                        }
-                    } else if (se.getXpos() == 6 && se.getYpos() == 11) {
-                        if (takenSC == TAKENSC.SC1) {
-                            sc1.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc1);
-                            takenSC = TAKENSC.SC1;
-                            tsi.setSwitch(3, 11, TSimInterface.SWITCH_LEFT);
-                        }
-                    } else if (se.getXpos() == 4 && se.getYpos() == 13) {
-                        if (takenSC == TAKENSC.SC1) {
-                            sc1.release();
-                            takenSC = TAKENSC.NONE;
-                        } else {
-                            testFreeWay(sc1);
-                            takenSC = TAKENSC.SC1;
-                            tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
-                        }
-                    } else if (se.getXpos() == 19 && se.getYpos() == 8) { //IN3
-                        if (takenIN == TAKENIN.IN3) {
-                        		if(fast)
-                            	in3.release();
-                            takenIN =TAKENIN.NONE;
-                        }else{
-                            chooseFreeWay(in3,17,7,TSimInterface.SWITCH_RIGHT);
-                            takenIN = TAKENIN.IN3;
-                        }
-                    } else if (se.getXpos() == 18 && se.getYpos() == 9) { //IN2
-                        if (takenIN == TAKENIN.IN2) {
-                         if(fast)
-                             in2.release();
-                            takenIN =TAKENIN.NONE;
-                        }else{
-                            chooseFreeWay(in2,15,9,TSimInterface.SWITCH_RIGHT);
-                            takenIN = TAKENIN.IN2;
-                        }
-                    } else if (se.getXpos() == 1 && se.getYpos() == 9) {
-                        if (takenIN == TAKENIN.IN2) {
-                            if(fast)
-                             in2.release();
-                            takenIN =TAKENIN.NONE;
-                        }else{
-                            chooseFreeWay(in2,4,9,TSimInterface.SWITCH_LEFT);
-                            takenIN = TAKENIN.IN2;
-                        }
-                    } else if (se.getXpos() == 1 && se.getYpos() == 10) { //IN1
-                        if (takenIN == TAKENIN.IN1) {
-                            if(fast)
-                            	in1.release();
-                            takenIN =TAKENIN.NONE;
-                        }else{
-                            chooseFreeWay(in1,3,11,TSimInterface.SWITCH_LEFT);
-                            takenIN = TAKENIN.IN1;
-                        }
-                    }
+                if (se.getStatus() == SensorEvent.ACTIVE) {
+                    manageStations(se, tsi);
+                    manageCriticalSections(se, tsi);
+                    manageTwoWaysSections(se, tsi);
                 }
-              }
             }
         } catch (CommandException e) {
             e.printStackTrace(); // or only e.getMessage() for the error
@@ -241,6 +107,163 @@ class Train extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace(); // or only e.getMessage() for the error
             System.exit(1);
+        }
+    }
+
+    private void manageStations(SensorEvent se, TSimInterface tsi) throws CommandException, InterruptedException {
+        if (se.getXpos() == 15 && se.getYpos() == 3
+                || se.getXpos() == 15 && se.getYpos() == 5) { //Stations section
+            if (station == STATION.UP) {
+                station = STATION.NONE;
+            } else {
+                station = STATION.UP;
+                tsi.setSpeed(this.id, 0);
+                this.sleep(2 + 2 * Lab1.simulationSpeed * Math.abs(this.speed));
+                this.speed = this.speed * -1;
+                tsi.setSpeed(this.id, this.speed);
+            }
+        } else if (se.getXpos() == 15 && se.getYpos() == 11
+                || se.getXpos() == 15 && se.getYpos() == 13) {
+            if (station == STATION.DOWN) {
+                station = STATION.NONE;
+            } else {
+                station = STATION.DOWN;
+                tsi.setSpeed(this.id, 0);
+                this.sleep(2 + 2 * Lab1.simulationSpeed * Math.abs(this.speed));
+                this.speed = this.speed * -1;
+                tsi.setSpeed(this.id, this.speed);
+            }
+        }
+    }
+
+    private void manageCriticalSections(SensorEvent se, TSimInterface tsi) throws CommandException, InterruptedException {
+        if (se.getXpos() == 9 && se.getYpos() == 5 //SC3
+                || se.getXpos() == 11 && se.getYpos() == 7
+                || se.getXpos() == 6 && se.getYpos() == 6
+                || se.getXpos() == 10 && se.getYpos() == 8) {
+            if (takenCS == TAKEN_CS.SC3) {
+                cs3.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs3);
+                takenCS = TAKEN_CS.SC3;
+            }
+        } else if (se.getXpos() == 14 && se.getYpos() == 7) { //SC2
+            if (takenCS == TAKEN_CS.SC2) {
+                cs2.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs2);
+                takenCS = TAKEN_CS.SC2;
+                tsi.setSwitch(17, 7, TSimInterface.SWITCH_RIGHT);
+            }
+        } else if (se.getXpos() == 15 && se.getYpos() == 8) {
+            if (takenCS == TAKEN_CS.SC2) {
+                cs2.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs2);
+                takenCS = TAKEN_CS.SC2;
+                tsi.setSwitch(17, 7, TSimInterface.SWITCH_LEFT);
+            }
+        } else if (se.getXpos() == 12 && se.getYpos() == 9) {
+            if (takenCS == TAKEN_CS.SC2) {
+                cs2.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs2);
+                takenCS = TAKEN_CS.SC2;
+                tsi.setSwitch(15, 9, TSimInterface.SWITCH_RIGHT);
+            }
+        } else if (se.getXpos() == 13 && se.getYpos() == 10) {
+            if (takenCS == TAKEN_CS.SC2) {
+                cs2.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs2);
+                takenCS = TAKEN_CS.SC2;
+                tsi.setSwitch(15, 9, TSimInterface.SWITCH_LEFT);
+            }
+        } else if (se.getXpos() == 7 && se.getYpos() == 9) { //SC1
+            if (takenCS == TAKEN_CS.SC1) {
+                cs1.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs1);
+                takenCS = TAKEN_CS.SC1;
+                tsi.setSwitch(4, 9, TSimInterface.SWITCH_LEFT);
+            }
+        } else if (se.getXpos() == 6 && se.getYpos() == 10) {
+            if (takenCS == TAKEN_CS.SC1) {
+                cs1.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs1);
+                takenCS = TAKEN_CS.SC1;
+                tsi.setSwitch(4, 9, TSimInterface.SWITCH_RIGHT);
+            }
+        } else if (se.getXpos() == 6 && se.getYpos() == 11) {
+            if (takenCS == TAKEN_CS.SC1) {
+                cs1.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs1);
+                takenCS = TAKEN_CS.SC1;
+                tsi.setSwitch(3, 11, TSimInterface.SWITCH_LEFT);
+            }
+        } else if (se.getXpos() == 4 && se.getYpos() == 13) {
+            if (takenCS == TAKEN_CS.SC1) {
+                cs1.release();
+                takenCS = TAKEN_CS.NONE;
+            } else {
+                testFreeWay(cs1);
+                takenCS = TAKEN_CS.SC1;
+                tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
+            }
+        }
+    }
+
+    private void manageTwoWaysSections(SensorEvent se, TSimInterface tsi) throws CommandException, InterruptedException {
+        if (se.getXpos() == 19 && se.getYpos() == 8) { //IN3
+            if (takenTW == TAKEN_TW.IN3) {
+                if (fast) {
+                    tw3.release();
+                }
+                takenTW = TAKEN_TW.NONE;
+            } else {
+                chooseFreeWay(tw3, 17, 7, TSimInterface.SWITCH_RIGHT);
+                takenTW = TAKEN_TW.IN3;
+            }
+        } else if (se.getXpos() == 18 && se.getYpos() == 9) { //IN2
+            if (takenTW == TAKEN_TW.IN2) {
+                if (fast) {
+                    tw2.release();
+                }
+                takenTW = TAKEN_TW.NONE;
+            } else {
+                chooseFreeWay(tw2, 15, 9, TSimInterface.SWITCH_RIGHT);
+                takenTW = TAKEN_TW.IN2;
+            }
+        } else if (se.getXpos() == 1 && se.getYpos() == 9) {
+            if (takenTW == TAKEN_TW.IN2) {
+                if (fast) {
+                    tw2.release();
+                }
+                takenTW = TAKEN_TW.NONE;
+            } else {
+                chooseFreeWay(tw2, 4, 9, TSimInterface.SWITCH_LEFT);
+                takenTW = TAKEN_TW.IN2;
+            }
+        } else if (se.getXpos() == 1 && se.getYpos() == 10) { //IN1
+            if (takenTW == TAKEN_TW.IN1) {
+                if (fast) {
+                    tw1.release();
+                }
+                takenTW = TAKEN_TW.NONE;
+            } else {
+                chooseFreeWay(tw1, 3, 11, TSimInterface.SWITCH_LEFT);
+                takenTW = TAKEN_TW.IN1;
+            }
         }
     }
 
@@ -256,10 +279,11 @@ class Train extends Thread {
     private void chooseFreeWay(Semaphore s, int xin, int yin, int fastestWay) throws CommandException, InterruptedException {
         TSimInterface tsi = TSimInterface.getInstance();
         int otherWay;
-        if(fastestWay == TSimInterface.SWITCH_LEFT)
+        if (fastestWay == TSimInterface.SWITCH_LEFT) {
             otherWay = TSimInterface.SWITCH_RIGHT;
-        else
+        } else {
             otherWay = TSimInterface.SWITCH_LEFT;
+        }
 
         if (s.tryAcquire() == false) { // Fastest way occuped
             tsi.setSwitch(xin, yin, otherWay);
