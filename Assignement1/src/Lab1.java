@@ -22,12 +22,11 @@ public class Lab1 {
             simulationSpeed = 100;
         }
 
-        Train t1 = new Train(1, Integer.parseInt(args[0]), true);
-        Train t2 = new Train(2, Integer.parseInt(args[1]), true);
+        Train t1 = new Train(1, Integer.parseInt(args[0]));
+        Train t2 = new Train(2, Integer.parseInt(args[1]));
 
         t1.start();
         t2.start();
-
     }
 }
 
@@ -39,13 +38,12 @@ class Train extends Thread {
     public static Semaphore tw1 = new Semaphore(0); //Two Ways section 1
     public static Semaphore tw2 = new Semaphore(1); //Two Ways section 2
     public static Semaphore tw3 = new Semaphore(0); //Two Ways section 3
-    boolean direction;
-    int id;
+    int id; //Train id
     int speed;
-    TAKEN_CS takenCS = TAKEN_CS.NONE;
-    TAKEN_TW takenTW;
+    TAKEN_CS takenCS = TAKEN_CS.NONE; //None of the trains start in a CS
+    TAKEN_TW takenTW; 
     STATION station;
-    boolean fast = true;
+    boolean fast = true; //While in a TW Section, allows to know in which of the two ways the train is
 
     enum TAKEN_CS {
 
@@ -70,8 +68,7 @@ class Train extends Thread {
         NONE
     }
 
-    public Train(int id, int speed, boolean direction) {
-        this.direction = direction;
+    public Train(int id, int speed) {
         this.id = id;
         this.speed = speed;
     }
