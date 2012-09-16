@@ -41,7 +41,7 @@ class Train extends Thread {
     int id; //Train id
     int speed;
     TAKEN_CS takenCS = TAKEN_CS.NONE; //None of the trains start in a CS
-    TAKEN_TW takenTW; 
+    TAKEN_TW takenTW;
     STATION station;
     boolean fast = true; //While in a TW Section, allows to know in which of the two ways the train is
 
@@ -142,7 +142,7 @@ class Train extends Thread {
                 cs3.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs3);
+                testCriticalSection(cs3);
                 takenCS = TAKEN_CS.SC3;
             }
         } else if (se.getXpos() == 14 && se.getYpos() == 7) { //SC2
@@ -150,7 +150,7 @@ class Train extends Thread {
                 cs2.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs2);
+                testCriticalSection(cs2);
                 takenCS = TAKEN_CS.SC2;
                 tsi.setSwitch(17, 7, TSimInterface.SWITCH_RIGHT);
             }
@@ -159,7 +159,7 @@ class Train extends Thread {
                 cs2.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs2);
+                testCriticalSection(cs2);
                 takenCS = TAKEN_CS.SC2;
                 tsi.setSwitch(17, 7, TSimInterface.SWITCH_LEFT);
             }
@@ -168,7 +168,7 @@ class Train extends Thread {
                 cs2.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs2);
+                testCriticalSection(cs2);
                 takenCS = TAKEN_CS.SC2;
                 tsi.setSwitch(15, 9, TSimInterface.SWITCH_RIGHT);
             }
@@ -177,7 +177,7 @@ class Train extends Thread {
                 cs2.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs2);
+                testCriticalSection(cs2);
                 takenCS = TAKEN_CS.SC2;
                 tsi.setSwitch(15, 9, TSimInterface.SWITCH_LEFT);
             }
@@ -186,7 +186,7 @@ class Train extends Thread {
                 cs1.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs1);
+                testCriticalSection(cs1);
                 takenCS = TAKEN_CS.SC1;
                 tsi.setSwitch(4, 9, TSimInterface.SWITCH_LEFT);
             }
@@ -195,7 +195,7 @@ class Train extends Thread {
                 cs1.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs1);
+                testCriticalSection(cs1);
                 takenCS = TAKEN_CS.SC1;
                 tsi.setSwitch(4, 9, TSimInterface.SWITCH_RIGHT);
             }
@@ -204,7 +204,7 @@ class Train extends Thread {
                 cs1.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs1);
+                testCriticalSection(cs1);
                 takenCS = TAKEN_CS.SC1;
                 tsi.setSwitch(3, 11, TSimInterface.SWITCH_LEFT);
             }
@@ -213,7 +213,7 @@ class Train extends Thread {
                 cs1.release();
                 takenCS = TAKEN_CS.NONE;
             } else {
-                testFreeWay(cs1);
+                testCriticalSection(cs1);
                 takenCS = TAKEN_CS.SC1;
                 tsi.setSwitch(3, 11, TSimInterface.SWITCH_RIGHT);
             }
@@ -264,7 +264,7 @@ class Train extends Thread {
         }
     }
 
-    private void testFreeWay(Semaphore s) throws CommandException, InterruptedException {
+    private void testCriticalSection(Semaphore s) throws CommandException, InterruptedException {
         TSimInterface tsi = TSimInterface.getInstance();
         if (s.tryAcquire() == false) {
             tsi.setSpeed(this.id, 0);
